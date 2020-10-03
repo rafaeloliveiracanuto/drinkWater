@@ -2,4 +2,6 @@
     <string name="app_name">DrinkWater</string>
     <string name="hint">Interval (minute)</string>
     <string name="notify">Notify</string>
+    <string name="message_error">Inform a correct interval!</string>
+    <string name="pause">Pause</string>
 </resources>
