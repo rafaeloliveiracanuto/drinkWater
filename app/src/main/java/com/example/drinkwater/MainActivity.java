@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int hour, minute, interval;
 
-    private boolean activated = false;
+    private boolean activated;
 
     private SharedPreferences preferences;
 
@@ -42,19 +42,23 @@ public class MainActivity extends AppCompatActivity {
         activated = preferences.getBoolean("activated", false);
 
         if (activated) {
-            buttonNotify.setText(R.string.pause);
-
-            int color = ContextCompat.getColor(this, android.R.color.black);
-            buttonNotify.setBackgroundColor(color);
-
-            int interval = preferences.getInt("interval", 0);
-            int hour = preferences.getInt("hour", timePicker.getCurrentHour());
-            int minute = preferences.getInt("minute", timePicker.getCurrentMinute());
-
-            editTextMinutes.setText(String.valueOf(interval));
-            timePicker.setCurrentHour(hour);
-            timePicker.setCurrentMinute(minute);
+            returnSavedState();
         }
+    }
+
+    private void returnSavedState() {
+        buttonNotify.setText(R.string.pause);
+
+        int color = ContextCompat.getColor(this, android.R.color.black);
+        buttonNotify.setBackgroundColor(color);
+
+        int interval = preferences.getInt("interval", 0);
+        int hour = preferences.getInt("hour", timePicker.getCurrentHour());
+        int minute = preferences.getInt("minutes", timePicker.getCurrentMinute());
+
+        editTextMinutes.setText(String.valueOf(interval));
+        timePicker.setCurrentHour(hour);
+        timePicker.setCurrentMinute(minute);
     }
 
     public View.OnClickListener notifyClick = new View.OnClickListener() {
