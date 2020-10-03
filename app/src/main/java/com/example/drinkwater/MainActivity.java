@@ -3,6 +3,8 @@ package com.example.drinkwater;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean activated = false;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
         timePicker.setIs24HourView(true);
 
         buttonNotify.setOnClickListener(notifyClick);
+
+        preferences = getSharedPreferences("database", Context.MODE_PRIVATE);
+        activated = preferences.getBoolean("activated", false);
+
+        if (activated) {
+            buttonNotify.setText(R.string.pause);
+
+            int color = ContextCompat.getColor(this, android.R.color.black);
+            buttonNotify.setBackgroundColor(color);
+
+            int interval = preferences.getInt("interval", 0);
+            int hour = preferences.getInt("hour", timePicker.getCurrentHour());
+            int minute = preferences.getInt("minute", timePicker.getCurrentMinute());
+
+            editTextMinutes.setText(String.valueOf(interval));
+            timePicker.setCurrentHour(hour);
+            timePicker.setCurrentMinute(minute);
+        }
     }
 
     public View.OnClickListener notifyClick = new View.OnClickListener() {
@@ -50,11 +72,36 @@ public class MainActivity extends AppCompatActivity {
             minute = timePicker.getCurrentMinute();
             interval = Integer.parseInt(sInterval);
 
-            buttonNotify.setText(R.string.pause);
+            if (!activated) {
+                buttonNotify.setText(R.string.pause);
 
-            int color = ContextCompat.getColor(v.getContext(), android.R.color.black);
+                int color = ContextCompat.getColor(v.getContext(), android.R.color.black);
+                buttonNotify.setBackgroundColor(color);
 
-            buttonNotify.setBackgroundColor(color);
+                activated = true;
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("activated", true);
+                editor.putInt("interval", interval);
+                editor.putInt("hour", hour);
+                editor.putInt("minutes", minute);
+                editor.apply();
+
+            } else {
+                buttonNotify.setText(R.string.notify);
+
+                int color = ContextCompat.getColor(v.getContext(), R.color.colorAccent);
+                buttonNotify.setBackgroundColor(color);
+
+                activated = false;
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("activated", false);
+                editor.remove("interval");
+                editor.remove("hour");
+                editor.remove("minutes");
+                editor.apply();
+            }
 
             Log.d("Testing", "hour: " + hour + "minute: " +
                 minute + "interval: " + interval);
