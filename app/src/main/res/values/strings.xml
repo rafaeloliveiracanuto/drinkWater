@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DrinkWater</string>
+    <string name="hint">Interval (minute)</string>
+    <string name="notify">Notify</string>
+</resources>
