@@ -61,10 +61,14 @@ public class MainActivity extends AppCompatActivity {
             minute = timePicker.getCurrentMinute();
             interval = Integer.parseInt(sInterval);
 
-            saveOrDeleteData(hour, minute, interval);
+            if (!activated) {
+                saveData(hour, minute, interval);
+            } else {
+                deleteData(hour, minute, interval);
+            }
 
             Log.d("Testing", "hour: " + hour + "minute: " +
-                    minute + "interval: " + interval);
+                minute + "interval: " + interval);
         }
     };
 
@@ -83,37 +87,36 @@ public class MainActivity extends AppCompatActivity {
         timePicker.setCurrentMinute(minute);
     }
 
-    private void saveOrDeleteData(int hour, int minute, int interval) {
-        if (!activated) {
-            buttonNotify.setText(R.string.pause);
+    private void saveData(int hour, int minute, int interval) {
+        buttonNotify.setText(R.string.pause);
 
-            int color = ContextCompat.getColor(this, android.R.color.black);
-            buttonNotify.setBackgroundColor(color);
+        int color = ContextCompat.getColor(this, android.R.color.black);
+        buttonNotify.setBackgroundColor(color);
 
-            activated = true;
+        activated = true;
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("activated", true);
-            editor.putInt("interval", interval);
-            editor.putInt("hour", hour);
-            editor.putInt("minutes", minute);
-            editor.apply();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("activated", true);
+        editor.putInt("interval", interval);
+        editor.putInt("hour", hour);
+        editor.putInt("minutes", minute);
+        editor.apply();
+    }
 
-        } else {
-            buttonNotify.setText(R.string.notify);
+    private void deleteData(int hour, int minute, int interval) {
+        buttonNotify.setText(R.string.notify);
 
-            int color = ContextCompat.getColor(this, R.color.colorAccent);
-            buttonNotify.setBackgroundColor(color);
+        int color = ContextCompat.getColor(this, R.color.colorAccent);
+        buttonNotify.setBackgroundColor(color);
 
-            activated = false;
+        activated = false;
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("activated", false);
-            editor.remove("interval");
-            editor.remove("hour");
-            editor.remove("minutes");
-            editor.apply();
-        }
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("activated", false);
+        editor.remove("interval");
+        editor.remove("hour");
+        editor.remove("minutes");
+        editor.apply();
     }
 
 }
