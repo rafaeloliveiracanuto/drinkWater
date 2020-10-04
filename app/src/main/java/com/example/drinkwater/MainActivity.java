@@ -1,9 +1,14 @@
 package com.example.drinkwater;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("Testing", "hour: " + hour + "minute: " +
                 minute + "interval: " + interval);
+
+            addNotification();
+
         }
     };
 
@@ -117,6 +125,18 @@ public class MainActivity extends AppCompatActivity {
         editor.remove("hour");
         editor.remove("minutes");
         editor.apply();
+    }
+
+    private void addNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0")
+                .setSmallIcon(R.drawable.ic_android_24dp)
+                .setContentTitle("Time to drink water")
+                .setContentText("For the God's sake, drink water!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        notificationManager.notify(0, builder.build());
     }
 
 }
